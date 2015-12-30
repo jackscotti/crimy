@@ -1,0 +1,14 @@
+<a href="/">Back to homepage</a>
+
+<h2>Crimes at same location:</h2>
+<%= crimes_at_location.count %>
+<a href='<%="https://data.police.uk/api/crimes-at-location?lat=#{@lat}&lng=#{@long}"%>'>Police API</a>
+
+<h2>Crimes within a mile (limited to 1000):</h2>
+
+<% crimes_1_mile_radious.each do |type| %>
+  <li>Type: <%= type["type"] %></li>
+  <li>Total: <%= type["total"] %></li>
+  </br>
+<% end %>
+<a href='<%="https://data.police.uk/api/crimes-street/all-crime?lat=#{@lat}&lng=#{@long}"%>'>Police API</a>
