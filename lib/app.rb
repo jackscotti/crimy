@@ -1,6 +1,7 @@
 require 'httparty'
 require 'nokogiri'
 require 'pry'
+require 'sinatra'
 
 class CoordinateFinder
   attr_reader :url
@@ -9,21 +10,54 @@ class CoordinateFinder
   end
 
   def coordinates
-    page = Nokogiri::HTML(HTTParty.get(url))
+    begin
+      page = Nokogiri::HTML(HTTParty.get(url))
+      if url.include?("zoopla")
 
-    if url.include?("zoopla")
-      lat = page.xpath("//meta[@property=\'og:latitude'\]").xpath('@content').text
-      long = page.xpath("//meta[@property=\'og:longitude'\]").xpath('@content').text
-      return lat,long
-    elsif url.include?("rightmove")
-      # pulling the coordinates out of the google map widget
-      address = page.xpath("//img[@alt=\'Get map and local information'\]").first.xpath('@src').text
-      address = address.split('?')[1].split('&')
-      lat = address[0].split("=")[1]
-      long = address[1].split("=")[1]
-      return lat,long
-    else
-      "Unknown site"
+        # these used to work then stopped
+        # lat = page.xpath("//meta[@property=\'og:latitude'\]").xpath('@content').text
+        # long = page.xpath("//meta[@property=\'og:longitude'\]").xpath('@content').text
+
+        lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
+        long = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
+
+        {lat: lat,long: long}
+      elsif url.include?("rightmove")
+        # pulling the coordinates out of the google map widget
+        address = page.xpath("//img[@alt=\'Get map and local information'\]").first.xpath('@src').text
+        address = address.split('?')[1].split('&')
+        lat = address[0].split("=")[1]
+        long = address[1].split("=")[1]
+
+        {lat: lat,long: long}
+      else
+        "Unknown site"
+      end
+    rescue
+      raise "something went wrong"
     end
+  end
+
+end
+
+get '/' do
+  if params['url']
+    url = params['url']
+    coordinates = CoordinateFinder.new(url).coordinates
+    params = "lat=#{coordinates[:lat]}&long=#{coordinates[:long]}"
+    redirect to '/crimes?' + params
+  else
+    erb :index
+  end
+end
+
+get '/crimes' do
+  lat = params['lat']
+  long = params['long']
+
+  unless lat && long
+    "you must provide <strong>lat</strong> and <strong>long</strong> in the body of your request"
+  else
+    "<h1>Coordinates</h1>\n lat:" + lat + ", long:" + long
   end
 end
