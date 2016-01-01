@@ -2,7 +2,7 @@
 
 <h2>Last month crimes near the location:</h2>
 <%= crimes_at_location.count %>
-<a href='<%="https://data.police.uk/api/crimes-at-location?lat=#{@lat}&lng=#{@long}"%>'>Police API</a>
+<a href='<%="https://data.police.uk/api/crimes-at-location?lat=#{lat}&lng=#{long}"%>'>Police API</a>
 
 <h2>Last month crimes (within a mile radious and limited to 1000):</h2>
 
@@ -11,6 +11,6 @@
   <li>Total: <%= type["total"] %></li>
   </br>
 <% end %>
-<a href='<%="https://data.police.uk/api/crimes-street/all-crime?lat=#{@lat}&lng=#{@long}"%>'>Police API</a>
+<a href='<%="https://data.police.uk/api/crimes-street/all-crime?lat=#{lat}&lng=#{long}"%>'>Police API</a>
 
 <%= erb :_disclaimer %>
