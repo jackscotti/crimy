@@ -15,6 +15,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    rack (1.6.4)
     slop (3.6.0)
 
 PLATFORMS
@@ -24,6 +25,7 @@ DEPENDENCIES
   httparty (~> 0.13.7)
   nokogiri (~> 1.6, >= 1.6.7.1)
   pry (~> 0.10.3)
+  rack (~> 1.6, >= 1.6.4)
 
 BUNDLED WITH
    1.11.2
