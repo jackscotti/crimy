@@ -7,12 +7,12 @@ DONE:
 - take long and lat and find crimes through police API
 - show interesting crime data
 - allow to search crimes for postcode
+- add disclaimer
 
 TODO:
 - hide errors, show an error page
 - make the app look pretty
 - add tests
 - push to Heroku
-- add disclaimer
 - extract classes out of main file
 - long should be lng or lon
