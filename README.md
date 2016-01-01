@@ -8,11 +8,11 @@ DONE:
 - show interesting crime data
 - allow to search crimes for postcode
 - add disclaimer
+- extract classes out of main file
 
 TODO:
 - hide errors, show an error page
 - make the app look pretty
 - add tests
 - push to Heroku
-- extract classes out of main file
 - long should be lng or lon
