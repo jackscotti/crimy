@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+ruby '2.2.4'
 
 gem 'httparty', '~> 0.13.7'
 gem 'nokogiri', '~> 1.6', '>= 1.6.7.1'
