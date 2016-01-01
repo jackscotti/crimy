@@ -9,10 +9,10 @@ DONE:
 - allow to search crimes for postcode
 - add disclaimer
 - extract classes out of main file
+- push to Heroku
+- long should be lng or lon
 
 TODO:
 - hide errors, show an error page
 - make the app look pretty
 - add tests
-- push to Heroku
-- long should be lng or lon

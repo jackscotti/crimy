@@ -18,17 +18,17 @@ end
 
 get '/crimes' do
   lat = params['lat']
-  long = params['long']
+  lng = params['lng']
 
-  unless lat && long
+  unless lat && lng
     # FIXME: this shows up if a non existing postcode has been provided
-    "you must provide <strong>lat</strong> and <strong>long</strong> in the body of your request"
+    "you must provide <strong>lat</strong> and <strong>lng</strong> in the body of your request"
   else
-    finder = CrimeFinder.new(lat: lat, long: long)
-    
+    finder = CrimeFinder.new(lat: lat, lng: lng)
+
     erb :crimes, locals: {
       lat: lat,
-      long: long,
+      lng: lng,
       crimes_at_location: finder.crimes_at_location,
       crimes_1_mile_radious: finder.crimes_within_1_mile_radious,
     }

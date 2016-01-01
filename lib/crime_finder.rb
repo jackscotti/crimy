@@ -1,26 +1,26 @@
 class CrimeFinder
-  attr_reader :lat, :long
+  attr_reader :lat, :lng
 
-  def initialize(lat:, long:)
+  def initialize(lat:, lng:)
     @lat = lat
-    @long = long
+    @lng = lng
   end
 
   def crimes_at_location
     '''
     crimes at location
-    https://data.police.uk/api/crimes-at-location?lat=#{lat}&lng=#{long}
+    https://data.police.uk/api/crimes-at-location?lat=#{lat}&lng=#{lng}
     '''
-    url = "https://data.police.uk/api/crimes-at-location?lat=#{@lat}&lng=#{@long}"
+    url = "https://data.police.uk/api/crimes-at-location?lat=#{lat}&lng=#{lng}"
     HTTParty.get(url)
   end
 
   def crimes_within_1_mile_radious
     '''
     street level crimes (1 mile radious)
-    "https://data.police.uk/api/crimes-street/all-crime?lat=#{lat}&lng=#{long}"
+    "https://data.police.uk/api/crimes-street/all-crime?lat=#{lat}&lng=#{lng}"
     '''
-    url = "https://data.police.uk/api/crimes-street/all-crime?lat=#{@lat}&lng=#{@long}"
+    url = "https://data.police.uk/api/crimes-street/all-crime?lat=#{lat}&lng=#{lng}"
     response = HTTParty.get(url)
 
     groups = response.group_by {|x| "#{x['category']}"}

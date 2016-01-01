@@ -16,17 +16,17 @@ class CoordinateFinder
           # long = page.xpath("//meta[@property=\'og:longitude'\]").xpath('@content').text
 
           lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
-          long = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
+          lng = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
 
-          {lat: lat,long: long}
+          {lat: lat,lng: lng}
         elsif url.include?("rightmove")
           # pulling the coordinates out of the google map widget
           address = page.xpath("//img[@alt=\'Get map and local information'\]").first.xpath('@src').text
           address = address.split('?')[1].split('&')
           lat = address[0].split("=")[1]
-          long = address[1].split("=")[1]
+          lng = address[1].split("=")[1]
 
-          {lat: lat,long: long}
+          {lat: lat,lng: lng}
         else
           "Unknown site"
         end
@@ -35,9 +35,9 @@ class CoordinateFinder
         response = HTTParty.get(url)
 
         lat = response["wgs84_lat"]
-        long = response["wgs84_lon"]
+        lng = response["wgs84_lon"]
 
-        {lat: lat,long: long}
+        {lat: lat,lng: lng}
       end
     rescue
       raise "something went wrong"
