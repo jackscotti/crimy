@@ -5,13 +5,11 @@ require 'sinatra'
 require 'addressable/uri'
 
 require_relative 'coordinate_finder'
+require_relative 'query_builder'
 
 get '/' do
   if params.any?
-    uri = Addressable::URI.new
-    symbolized_params = Hash[params.map{ |k, v| [k.to_sym, v] }]
-    uri.query_values = CoordinateFinder.new(symbolized_params).coordinates
-    redirect to '/crimes?' + uri.query
+    redirect to '/crimes?' + QueryBuilder.new(params).query
   else
     erb :index
   end
