@@ -1,4 +1,5 @@
 require 'webmock/rspec'
+require_relative '../lib/all'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -7,5 +8,9 @@ RSpec.configure do |config|
 
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
+  end
+
+  def read_fixture(name)
+    File.read("spec/fixtures/#{name}.json")
   end
 end
