@@ -16,3 +16,5 @@ TODO:
 - hide errors, show an error page
 - make the app look pretty
 - add tests
+- add jenkins
+- use JavaScript to display data
