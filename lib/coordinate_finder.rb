@@ -6,42 +6,47 @@ class CoordinateFinder
   end
 
   def coordinates
-    begin
-      if url
-        page = Nokogiri::HTML(HTTParty.get(url))
-        if url.include?("zoopla")
+    if url
+      page = Nokogiri::HTML(get_content_at_url(url))
+      if url.include?("zoopla")
 
-          # these used to work then stopped
-          # lat = page.xpath("//meta[@property=\'og:latitude'\]").xpath('@content').text
-          # long = page.xpath("//meta[@property=\'og:longitude'\]").xpath('@content').text
+        # these used to work then stopped
+        # lat = page.xpath("//meta[@property=\'og:latitude'\]").xpath('@content').text
+        # long = page.xpath("//meta[@property=\'og:longitude'\]").xpath('@content').text
 
-          lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
-          lng = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
-
-          {lat: lat,lng: lng}
-        elsif url.include?("rightmove")
-          # pulling the coordinates out of the google map widget
-          address = page.xpath("//img[@alt=\'Get map and local information'\]").first.xpath('@src').text
-          address = address.split('?')[1].split('&')
-          lat = address[0].split("=")[1]
-          lng = address[1].split("=")[1]
-
-          {lat: lat,lng: lng}
-        else
-          "Unknown site"
-        end
-      elsif postcode
-        url = "https://mapit.mysociety.org/postcode/#{CGI.escape(postcode)}"
-        response = HTTParty.get(url)
-
-        lat = response["wgs84_lat"]
-        lng = response["wgs84_lon"]
+        lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
+        lng = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
 
         {lat: lat,lng: lng}
+      elsif url.include?("rightmove")
+        # pulling the coordinates out of the google map widget
+        address = page.xpath("//img[@alt=\'Get map and local information'\]").first.xpath('@src').text
+        address = address.split('?')[1].split('&')
+        lat = address[0].split("=")[1]
+        lng = address[1].split("=")[1]
+
+        {lat: lat,lng: lng}
+      else
+        "Unknown site"
       end
-    rescue
-      raise "something went wrong"
+    elsif postcode
+      url = "https://mapit.mysociety.org/postcode/#{CGI.escape(postcode)}"
+
+      response = get_content_at_url(url)
+
+      raise "Not a valid or complete postcode inserted" if response.code == 400
+
+      lat = response["wgs84_lat"]
+      lng = response["wgs84_lon"]
+
+      binding.pry
+      {lat: lat,lng: lng}
     end
   end
 
+private
+
+  def get_content_at_url(url)
+    HTTParty.get(url)
+  end
 end
