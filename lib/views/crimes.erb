@@ -1,10 +1,10 @@
 <a href="/">Back to homepage</a>
 
-<h2>Last month crimes near the location:</h2>
+<h2>Last month crimes:</h2>
 <%= crimes_at_location.count %>
 <a href='<%="https://data.police.uk/api/crimes-at-location?lat=#{lat}&lng=#{lng}"%>'>Police API</a>
 
-<h2>Last month crimes (within a mile radious and limited to 1000):</h2>
+<h2>Last month crimes within a mile of the location (1000 max):</h2>
 
 <% crimes_1_mile_radious.each do |type| %>
   <li>Type: <%= type["type"] %></li>
