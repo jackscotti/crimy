@@ -1,11 +1,12 @@
 require 'coordinate_finder'
 require 'spec_helper'
 
-# Warning: These tests could pass if MapIt changed its API.
+# Warning: These tests could pass even if MapIt changed their API.
 describe "#coordinates" do
+
   context "providing a postcode" do
     context "Mapit does not find the postcode" do
-      it "raises an error" do
+      it "raises an error when postcode is not valid" do
         error_message = "Postcode 'not a postcode' is not valid."
         response = {
           "code" => 400,
@@ -33,7 +34,23 @@ describe "#coordinates" do
 
         expect(coordinates[:lat]).to eq(51.00)
         expect(coordinates[:lng]).to eq(-0.12)
-       end
-     end
+      end
+    end
+  end
+
+  context "Rightmove" do
+    xit "finds lat and long" do
+    end
+
+    xit "does not find lat and long and raise error" do
+    end
+  end
+
+  context "Zoopla" do
+    xit "finds lat and long" do
+    end
+
+    xit "does not find lat and long and raise error" do
+    end
   end
 end
