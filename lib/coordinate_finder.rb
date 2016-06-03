@@ -6,13 +6,10 @@ class CoordinateFinder
   end
 
   def coordinates
+    # TODO: Extract to coordinate extractor object
     if url
       page = Nokogiri::HTML(get_content_at_url(url))
       if url.include?("zoopla")
-
-        # these used to work then stopped
-        # lat = page.xpath("//meta[@property=\'og:latitude'\]").xpath('@content').text
-        # long = page.xpath("//meta[@property=\'og:longitude'\]").xpath('@content').text
 
         lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
         lng = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
@@ -30,16 +27,15 @@ class CoordinateFinder
         "Unknown site"
       end
     elsif postcode
+
       url = "https://mapit.mysociety.org/postcode/#{CGI.escape(postcode)}"
 
       response = get_content_at_url(url)
 
       raise "Not a valid or complete postcode inserted" if response.code == 400
-
       lat = response["wgs84_lat"]
       lng = response["wgs84_lon"]
 
-      binding.pry
       {lat: lat,lng: lng}
     end
   end
