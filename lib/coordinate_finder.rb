@@ -8,7 +8,7 @@ class CoordinateFinder
   def coordinates
     # TODO: Extract to coordinate extractor object
     if url
-      page = Nokogiri::HTML(get_content_at_url(url))
+      page = Nokogiri::HTML(get_content(url))
       if url.include?("zoopla")
 
         lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
@@ -27,22 +27,23 @@ class CoordinateFinder
         "Unknown site"
       end
     elsif postcode
+      response = get_content
 
-      url = "https://mapit.mysociety.org/postcode/#{CGI.escape(postcode)}"
+      # TODO: return MapIt error
+      raise "Not a valid or complete postcode inserted" if response["code"] == 400
 
-      response = get_content_at_url(url)
-
-      raise "Not a valid or complete postcode inserted" if response.code == 400
       lat = response["wgs84_lat"]
       lng = response["wgs84_lon"]
 
       {lat: lat,lng: lng}
     end
+    # TODO: rescue exceptions
   end
 
 private
-
-  def get_content_at_url(url)
+  def get_content(url = nil)
+    url = "https://mapit.mysociety.org/postcode/#{CGI.escape(postcode)}" if postcode
+    # might need to transform this into a hash
     HTTParty.get(url)
   end
 end

@@ -1,5 +1,7 @@
 require 'webmock/rspec'
 require_relative '../lib/all'
+require 'httparty'
+require 'pry'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
