@@ -29,8 +29,7 @@ class CoordinateFinder
     elsif postcode
       response = get_content
 
-      # TODO: return MapIt error
-      raise "Not a valid or complete postcode inserted" if response["code"] == 400
+      raise response["error"] if response["code"] == 400
 
       lat = response["wgs84_lat"]
       lng = response["wgs84_lon"]
