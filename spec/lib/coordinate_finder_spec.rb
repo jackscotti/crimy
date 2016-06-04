@@ -43,7 +43,6 @@ describe "#coordinates" do
     let(:finder) { CoordinateFinder.new(url: url) }
 
     it "finds lat and long" do
-
       response = File.read("spec/fixtures/rightmove-house.html")
 
       allow(finder).to receive(:get_content) { response }
@@ -64,10 +63,26 @@ describe "#coordinates" do
   end
 
   context "Zoopla" do
-    xit "finds lat and long" do
+    let(:url) { "http://www.zoopla.co.uk/new-homes/details/40626261?search_identifier=xxxxxx" }
+    let(:finder) { CoordinateFinder.new(url: url) }
+
+    it "finds lat and long" do
+      response = File.read("spec/fixtures/zoopla-house.html")
+
+      allow(finder).to receive(:get_content) { response }
+
+      coordinates = finder.coordinates
+
+      expect(coordinates[:lat]).to eq("50.1")
+      expect(coordinates[:lng]).to eq("-0.11")
     end
 
-    xit "does not find lat and long and raise error" do
+    it "does not find lat and long and raise error" do
+      response = "an unexpected response that does not contain lat and long data"
+
+      allow(finder).to receive(:get_content) { response }
+
+      expect { finder.coordinates }.to raise_error "whoops, something went wrong!"
     end
   end
 end

@@ -12,7 +12,7 @@ class CoordinateFinder
 
           lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
           lng = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
-
+          raise "whoops, something went wrong!" if lat.empty? or lng.empty?
           {lat: lat,lng: lng}
         elsif url.include?("rightmove")
           begin
