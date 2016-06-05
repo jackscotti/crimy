@@ -16,7 +16,7 @@ describe "#coordinates" do
         finder = CoordinateFinder.new(postcode: "not a postcode")
         allow(finder).to receive(:get_content) { response }
 
-        expect { finder.coordinates }.to raise_error error_message
+        expect { finder.find }.to raise_error error_message
       end
     end
     context "Mapit finds the postcode" do
@@ -30,7 +30,7 @@ describe "#coordinates" do
         finder = CoordinateFinder.new(postcode: "V4L 1D")
         allow(finder).to receive(:get_content) { response }
 
-        coordinates = finder.coordinates
+        coordinates = finder.find
 
         expect(coordinates[:lat]).to eq(51.00)
         expect(coordinates[:lng]).to eq(-0.12)
@@ -47,7 +47,7 @@ describe "#coordinates" do
 
       allow(finder).to receive(:get_content) { response }
 
-      coordinates = finder.coordinates
+      coordinates = finder.find
 
       expect(coordinates[:lat]).to eq("51.50")
       expect(coordinates[:lng]).to eq("-0.16")
@@ -58,7 +58,7 @@ describe "#coordinates" do
 
       allow(finder).to receive(:get_content) { response }
 
-      expect { finder.coordinates }.to raise_error "whoops, something went wrong!"
+      expect { finder.find }.to raise_error "whoops, something went wrong!"
     end
   end
 
@@ -71,7 +71,7 @@ describe "#coordinates" do
 
       allow(finder).to receive(:get_content) { response }
 
-      coordinates = finder.coordinates
+      coordinates = finder.find
 
       expect(coordinates[:lat]).to eq("50.1")
       expect(coordinates[:lng]).to eq("-0.11")
@@ -82,7 +82,7 @@ describe "#coordinates" do
 
       allow(finder).to receive(:get_content) { response }
 
-      expect { finder.coordinates }.to raise_error "whoops, something went wrong!"
+      expect { finder.find }.to raise_error "whoops, something went wrong!"
     end
   end
 end
