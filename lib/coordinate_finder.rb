@@ -1,50 +1,61 @@
 class CoordinateFinder
-  attr_reader :url, :postcode
+  attr_reader :url, :postcode, :type
   def initialize(url: nil, postcode: nil)
     @url = url
     @postcode = postcode
+    @type = set_type
   end
 
   def find
-    if url
-      page = Nokogiri::HTML(get_content(url))
-      if url.include?("zoopla")
+    page = request_page
 
-        lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
-        lng = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
-        raise "whoops, something went wrong!" if lat.empty? or lng.empty?
-        {lat: lat,lng: lng}
-      elsif url.include?("rightmove")
-        begin
-          # pulling the coordinates out of the google map widget
-          address = page.xpath("//img[@alt=\'Get map and local information'\]").first.xpath('@src').text
-          address = address.split('?')[1].split('&')
-          lat = address[0].split("=")[1]
-          lng = address[1].split("=")[1]
-
-          {lat: lat,lng: lng}
-        rescue
-          raise "whoops, something went wrong!"
-        end
-      else
-        "Unknown site"
+    case type
+    when :rightmove
+      begin
+        # pulls the coordinates out of the google map widget
+        address = page.xpath("//img[@alt=\'Get map and local information'\]").first.xpath('@src').text
+        address = address.split('?')[1].split('&')
+        lat = address[0].split("=")[1]
+        lng = address[1].split("=")[1]
+      rescue
+        raise "whoops, something went wrong!"
       end
-    elsif postcode
-      response = get_content
+    when :zoopla
+      lat = page.xpath("//*[@itemprop='latitude']").xpath('@content').text
+      lng = page.xpath("//*[@itemprop='longitude']").xpath('@content').text
+      raise "whoops, something went wrong!" if lat.empty? or lng.empty?
+    when :postcode
+      raise page["error"] if page["code"] == 400
 
-      raise response["error"] if response["code"] == 400
-
-      lat = response["wgs84_lat"]
-      lng = response["wgs84_lon"]
-
-      {lat: lat,lng: lng}
+      lat = page["wgs84_lat"]
+      lng = page["wgs84_lon"]
     end
+    {lat: lat,lng: lng}
   end
 
 private
-  def get_content(url = nil)
-    url = "https://mapit.mysociety.org/postcode/#{CGI.escape(postcode)}" if postcode
-    # might need to transform this into a hash
+
+  def request_page
+    case type
+    when :zoopla, :rightmove
+      Nokogiri::HTML(get_content(url))
+    when :postcode
+      url = "https://mapit.mysociety.org/postcode/#{CGI.escape(postcode)}"
+      get_content(url)
+    end
+  end
+
+  def set_type
+    if postcode
+      :postcode
+    elsif url.include?("zoopla")
+      :zoopla
+    elsif url.include?("rightmove")
+      :rightmove
+    end
+  end
+
+  def get_content(url)
     HTTParty.get(url)
   end
 end
