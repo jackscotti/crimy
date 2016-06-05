@@ -1,8 +1,8 @@
 class CoordinateFinder
   attr_reader :url, :postcode, :type
-  def initialize(url: nil, postcode: nil)
-    @url = url
-    @postcode = postcode
+  def initialize(params = {})
+    @url = params.fetch("url", nil)
+    @postcode = params.fetch("postcode", nil)
     @type = set_type
   end
 
